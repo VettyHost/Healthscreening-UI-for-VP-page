@@ -60,6 +60,11 @@
                 <div class="flex flex-col items-end mt-2 space-y-3">
                     <a href="#" class="text-primary font-semibold hover:underline">Modify Order</a>
 
+                    <!-- NEW BUTTON: Modify Pass Duration (Moved to Top Right) -->
+                    <button onclick="openDurationModal()" class="text-primary font-semibold hover:underline text-right max-w-xs text-xs sm:text-sm tracking-wide">
+                        Modify Pass Duration
+                    </button>
+
                     <!-- RENAMED BUTTON: Manage Appointment (Title Case) -->
                     <button onclick="openConfirmModal()" class="text-primary font-semibold hover:underline text-right max-w-xs text-xs sm:text-sm tracking-wide">
                         Manage Appointment
@@ -178,8 +183,6 @@
                         <div class="flex flex-col items-end gap-3 text-xs sm:text-sm font-bold text-primary whitespace-nowrap pt-1">
                             <button onclick="openConfirmModal()" class="hover:underline focus:outline-none tracking-wide">Change Location</button>
                             <a href="#" class="hover:underline flex items-center gap-1 focus:outline-none tracking-wide font-normal">Get Directions <i class="fas fa-external-link-alt text-[10px]"></i></a>
-                            
-                            <button onclick="openDurationModal()" class="hover:underline focus:outline-none tracking-wide mt-2">Modify Pass Duration</button>
                         </div>
                     </div>
 
@@ -195,14 +198,40 @@
 
     <!-- MODIFY DURATION MODAL -->
     <div id="durationModal" class="fixed inset-0 bg-slate-900 bg-opacity-50 hidden flex items-center justify-center z-[60]">
-        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-slate-800">Modify Pass Duration</h3>
                 <button onclick="closeDurationModal()" class="text-slate-400 hover:text-slate-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <p class="text-sm text-slate-600 mb-6">Update the duration of your existing donor pass without changing the clinic location.</p>
+            <p class="text-sm text-slate-600 mb-6">Select a donor pass below to update its duration without changing the clinic location.</p>
+            
+            <!-- PASS SELECTION LIST -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-600 mb-2">Select Pass to Modify<span class="text-red-500">*</span>:</label>
+                <div class="space-y-3 border border-slate-200 rounded-md p-3 bg-slate-50 max-h-48 overflow-y-auto">
+                    <!-- Dynamic Pass 1 (Tied to Main UI) -->
+                    <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded cursor-pointer hover:border-blue-400 has-[:checked]:border-blue-500 has-[:checked]:ring-1 has-[:checked]:ring-blue-500 transition-all">
+                        <input type="radio" name="pass_to_modify" value="pass1" checked class="mt-1">
+                        <div class="text-xs">
+                            <div class="font-bold text-slate-800 text-sm mb-1">Vaccine, Drug, Basic Physical, Titers</div>
+                            <div id="durationModalLabName" class="text-slate-600 font-medium">Pending Selection...</div>
+                            <div class="text-slate-500 mt-1">Current Expiration: <span id="durationModalDateDisplay" class="font-medium text-red-500">N/A</span></div>
+                        </div>
+                    </label>
+
+                    <!-- Mock Pass 2 (To show multiple passes support) -->
+                    <label class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded cursor-pointer hover:border-blue-400 has-[:checked]:border-blue-500 has-[:checked]:ring-1 has-[:checked]:ring-blue-500 transition-all opacity-80">
+                        <input type="radio" name="pass_to_modify" value="pass2" class="mt-1">
+                        <div class="text-xs">
+                            <div class="font-bold text-slate-800 text-sm mb-1">Background Screening Only (Example)</div>
+                            <div class="text-slate-600 font-medium">Labcorp - Brooklyn Center</div>
+                            <div class="text-slate-500 mt-1">Current Expiration: <span class="font-medium text-red-500">Monday, April 06, 2026</span></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
             
             <div class="flex items-center mb-8">
                 <label class="w-1/2 text-sm font-medium text-slate-600">New Duration<span class="text-red-500">*</span>:</label>
@@ -422,13 +451,38 @@
             document.getElementById('resultsSection').classList.add('hidden'); 
         }
 
-        function openDurationModal() { document.getElementById('durationModal').classList.remove('hidden'); }
+        function openDurationModal() { 
+            // Sync data from the main UI to the modal before opening
+            const labName = document.getElementById('confLabName');
+            const currentExp = document.getElementById('dueDateDisplay');
+            
+            if (labName && currentExp && !document.getElementById('confirmedOrderDetails').classList.contains('hidden')) {
+                document.getElementById('durationModalLabName').innerText = labName.innerText;
+                document.getElementById('durationModalDateDisplay').innerText = currentExp.innerText;
+            } else {
+                document.getElementById('durationModalLabName').innerText = "Pending Clinic Selection...";
+                document.getElementById('durationModalDateDisplay').innerText = "N/A";
+            }
+            
+            document.getElementById('durationModal').classList.remove('hidden'); 
+        }
         function closeDurationModal() { document.getElementById('durationModal').classList.add('hidden'); }
 
         function confirmDurationChange() {
+            const selectedPass = document.querySelector('input[name="pass_to_modify"]:checked');
+            if(!selectedPass) {
+                alert("Please select a pass to modify.");
+                return;
+            }
+
             const days = document.getElementById('onlyDurationSelect').value;
             const newDate = getFutureDate(days);
-            document.getElementById('dueDateDisplay').innerText = newDate;
+            
+            if (selectedPass.value === 'pass1') {
+                // Only update main UI if the first real pass is selected
+                document.getElementById('dueDateDisplay').innerText = newDate;
+            }
+            
             alert("Success! Your pass duration has been extended to " + newDate + ". A new pass has been issued.");
             closeDurationModal();
         }
