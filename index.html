@@ -373,23 +373,19 @@
                     
                     <div class="relative w-full max-w-md">
                         <button type="button" onclick="toggleScheduleClinicDropdown()" class="w-full border border-slate-300 rounded-md px-3 py-2.5 text-sm text-slate-600 bg-slate-50 focus:outline-none flex justify-between items-center text-left">
-                            <span class="truncate font-medium">Internal Clinics</span>
+                            <span id="scheduleDropdownText" class="truncate font-medium text-slate-400">Select Preferences...</span>
                             <i class="fas fa-chevron-down text-xs text-slate-500"></i>
                         </button>
                         <!-- Dropdown Menu -->
                         <div id="scheduleClinicDropdown" class="hidden absolute z-10 w-full mt-1 bg-[#f8fafc] border border-slate-200 rounded-md shadow-lg">
                             <div class="p-3 space-y-3 text-sm text-slate-600 font-medium tracking-wide">
                                 <label class="flex items-center gap-3 cursor-pointer hover:text-primary transition-colors">
-                                    <input type="checkbox" class="rounded border-slate-300 text-primary w-4 h-4 bg-white">
+                                    <input type="checkbox" value="Preferred Clinics" onchange="updateDropdownText('scheduleClinicDropdown', 'scheduleDropdownText')" class="rounded border-slate-300 text-primary w-4 h-4 bg-white">
                                     Preferred Clinics
                                 </label>
                                 <label class="flex items-center gap-3 cursor-pointer hover:text-primary transition-colors">
-                                    <input type="checkbox" class="rounded border-slate-300 text-primary w-4 h-4 bg-white">
+                                    <input type="checkbox" value="Preferred Clinics & More Options" onchange="updateDropdownText('scheduleClinicDropdown', 'scheduleDropdownText')" class="rounded border-slate-300 text-primary w-4 h-4 bg-white">
                                     Preferred Clinics & More Options
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer hover:text-primary transition-colors">
-                                    <input type="checkbox" checked class="rounded border-slate-300 text-primary w-4 h-4 bg-white">
-                                    Internal Clinics
                                 </label>
                             </div>
                         </div>
@@ -571,23 +567,20 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                    <div class="relative w-full max-w-md">
-                        <button type="button" onclick="toggleScheduleClinicDropdown()" class="w-full border border-slate-300 rounded-md px-3 py-2.5 text-sm bg-slate-50 focus:outline-none flex justify-between items-center text-left">
-                            <span id="scheduleDropdownText" class="truncate font-medium text-slate-400">Select Preferences...</span>
-                            <i class="fas fa-chevron-down text-xs text-slate-500"></i>
-                        </button>
-                        <!-- Dropdown Menu -->
-                        <div id="scheduleClinicDropdown" class="hidden absolute z-10 w-full mt-1 bg-[#f8fafc] border border-slate-200 rounded-md shadow-lg">
-                            <div class="p-3 space-y-3 text-sm text-slate-600 font-medium tracking-wide">
-                                <label class="flex items-center gap-3 cursor-pointer hover:text-primary transition-colors">
-                                    <input type="checkbox" value="Preferred Clinics" onchange="updateDropdownText('scheduleClinicDropdown', 'scheduleDropdownText')" class="rounded border-slate-300 text-primary w-4 h-4 bg-white">
-                                    Preferred Clinics
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer hover:text-primary transition-colors">
-                                    <input type="checkbox" value="Preferred Clinics & More Options" onchange="updateDropdownText('scheduleClinicDropdown', 'scheduleDropdownText')" class="rounded border-slate-300 text-primary w-4 h-4 bg-white">
-                                    Preferred Clinics & More Options
-                                </label>
+                    <div class="flex items-center">
+                        <label class="w-1/3 text-sm font-medium text-slate-600 text-right pr-4">Enter ZIP Code<br><span class="text-xs text-slate-400">(Required to Check Availability)</span>:</label>
+                        <input type="text" id="zipcodeInput" value="11211" maxlength="5" pattern="\d{5}" title="Five digit ZIP code" placeholder="e.g. 11211" class="w-2/3 border border-slate-300 rounded-md px-3 py-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                    </div>
+
+                    <div class="flex items-center">
+                        <label class="w-1/3 text-sm font-medium text-slate-600 text-right pr-4">Radius<br><span class="text-xs text-slate-400">(Required to Check Availability)</span>:</label>
+                        <div class="w-2/3 flex gap-2">
+                            <select id="radiusSelect" class="flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary bg-slate-50 cursor-pointer max-h-48 overflow-y-auto">
+                            </select>
+                            <div class="flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm text-slate-600 bg-slate-50 flex items-center">
+                                Miles
                             </div>
                         </div>
                     </div>
